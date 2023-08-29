@@ -1,0 +1,3 @@
+[submodule "airscraper"]
+	path = airscraper
+	url = https://github.com/lordot/airscraper
