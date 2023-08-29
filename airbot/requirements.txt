@@ -1,0 +1,9 @@
+asgiref==3.7.2
+click==8.1.7
+colorama==0.4.6
+Django==4.2.4
+h11==0.14.0
+psycopg2==2.9.7
+sqlparse==0.4.4
+tzdata==2023.3
+uvicorn==0.23.2
