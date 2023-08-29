@@ -2,7 +2,7 @@ FROM python:3.11-alpine
 
 WORKDIR /app
 
-COPY ./requirements.txt .
+COPY requirements.txt .
 
 RUN \
  apk add --no-cache postgresql-libs && \
@@ -10,6 +10,6 @@ RUN \
  python3 -m pip install -r /app/requirements.txt --no-cache-dir && \
  apk --purge del .build-deps
 
-COPY ../infra .
+COPY . .
 
 ENTRYPOINT ["sh", "entrypoint.sh"]
