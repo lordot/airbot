@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'tasks',
 ]
 
 MIDDLEWARE = [
@@ -65,11 +67,11 @@ WSGI_APPLICATION = 'airbot.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': os.getenv('ENGINE', 'django.db.backends.dummy'),
         'NAME': os.getenv('DB_NAME', 'postgres'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.getenv('HOST', 'db'),
+        'HOST': os.getenv('HOST', 'localhost'),
         'PORT': os.getenv('PORT', '5432')
     }
 }
