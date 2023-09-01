@@ -7,16 +7,16 @@ PICKER_TYPE = [
     ("calendar", "calendar")
 ]
 TRIP_LENGTHS = [
-    ("one_month", "months"),
-    ("one_week", "weeks"),
-    ("weekend_trip", "weekend")
+    ("one_month,", "months"),
+    ("one_week,", "weeks"),
+    ("weekend_trip,", "weekend")
 ]
 
 
 class Task(models.Model):
     chat_id = models.IntegerField()
 
-    city = models.CharField(max_length=100)
+    query = models.CharField(max_length=100)  # city
     price_min = models.PositiveIntegerField()
     price_max = models.PositiveIntegerField()
     room_types = models.CharField(max_length=100, choices=ROOM_TYPES)
