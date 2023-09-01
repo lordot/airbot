@@ -11,15 +11,9 @@ TRIP_LENGTHS = [
     ("one_week", "weeks"),
     ("weekend_trip", "weekend")
 ]
-DATE_FORMAT = ['%d-%m-%Y']
 
 
 class Task(models.Model):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        print(f"!!!!!!!!!!!{self.scrapy_args()}!!!!!!!!!!!!!!!")
-
     chat_id = models.IntegerField()
 
     city = models.CharField(max_length=100)
