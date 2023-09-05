@@ -1,10 +1,11 @@
 from django.http import HttpResponse
 
 from .models import Task
-from .tasks import start_scrapy
+from .tasks import Scrapper
 
 
 def index(request):
-    tasks = Task.objects.all()
-    results = start_scrapy(tasks[0])
+    task = Task.objects.first()
+    scrp = Scrapper(task=task)
+    results = scrp.check_results()
     return HttpResponse(results)

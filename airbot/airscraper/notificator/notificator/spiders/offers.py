@@ -10,7 +10,7 @@ from scrapy.http import Response
 
 
 class RoomItem(scrapy.Item):
-    id = Field()
+    id = Field(serializer=int)
     name = Field()
     type = Field()
     rate = Field(serializer=float)
@@ -79,7 +79,7 @@ class OffersSpider(Spider):
 
             listening = room.get("listing")
             if listening:
-                item["id"] = listening.get("id")
+                item["id"] = int(listening.get("id"))
                 item["name"] = listening.get("name", None)
                 item["type"] = listening.get("roomTypeCategory")
                 try:

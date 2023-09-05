@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.forms import forms
 
-from .models import Task
+from .models import Task, Room, Offer
 
 
 class TaskForm(forms.Form):
@@ -15,3 +15,5 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Task)
+admin.site.register(Room)
+admin.site.register(Offer)

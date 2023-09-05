@@ -1,4 +1,4 @@
 
 [submodule "airscraper"]
-	path = airscraper
+	path = airbot/airbot/airscraper
 	url = https://github.com/lordot/airscraper
