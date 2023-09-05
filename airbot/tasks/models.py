@@ -64,4 +64,3 @@ class Offer(models.Model):
     class Meta:
         unique_together = ["room", "task"]
         verbose_name_plural = "Offers"
-
