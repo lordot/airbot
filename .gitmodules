@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+
+[submodule "airscraper"]
+	path = airscraper
+	url = https://github.com/lordot/airscraper.git
+=======
 [submodule "airscraper"]
 	path = airscraper
 	url = https://github.com/lordot/airscraper
+>>>>>>> 3bec8d3025f44fe31df7c51d511cc2c2f2024e3b

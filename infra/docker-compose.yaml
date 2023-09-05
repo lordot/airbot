@@ -10,6 +10,18 @@ services:
   healthcheck:
    test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
 
+<<<<<<< HEAD
+ scraper:
+  image: lordot/airscraper
+  build:
+   context: ../airscraper
+   dockerfile: ../airscraper/Dockerfile
+  restart: always
+  ports:
+   - "8000:8000"
+
+=======
+>>>>>>> 3bec8d3025f44fe31df7c51d511cc2c2f2024e3b
  django:
   image: lordot/airbot
   build:
