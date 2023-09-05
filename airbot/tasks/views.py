@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 
 from .models import Task
-from .tasks import Scrapper
+from .services import Scrapper
 
 
 def index(request):

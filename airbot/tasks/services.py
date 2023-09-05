@@ -1,19 +1,4 @@
-from scrapy.crawler import CrawlerProcess, CrawlerRunner
-from scrapy.utils.project import get_project_settings
-
-from airscraper.notificator.notificator.spiders.offers import OffersSpider
 from tasks.models import Task, Room, Offer
-
-DATA = []
-
-
-class MyPipeline:
-
-    def open_spider(self, spider):
-        DATA.clear()
-
-    def process_item(self, item, spider):
-        DATA.append(dict(item))
 
 
 class Scrapper:
@@ -30,15 +15,7 @@ class Scrapper:
         self.args.pop("_state")
         self.args.pop("chat_id")
 
-        settings = get_project_settings()
-        settings["LOG_LEVEL"] = "INFO"
-        settings['ITEM_PIPELINES'] = {'tasks.tasks.MyPipeline': 1}
-        process = CrawlerProcess(settings)
-
-        process.crawl(OffersSpider, **self.args)
-        process.start(stop_after_crawl=True, install_signal_handlers=False)
-
-        return DATA
+        return None
 
     def check_results(self) -> list[Offer]:
         """
