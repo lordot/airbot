@@ -1,21 +1,25 @@
+import requests
+
 from tasks.models import Task, Room, Offer
 
 
 class Scrapper:
 
     def __init__(self, task: Task):
-        self.task_id = task.__dict__.pop("id")
         self.args = task.__dict__
+        self.args.pop("_state")
+        self.task_id = self.args.pop("id")
+        self.chat_id = self.args.pop("chat_id")
         self.results = self.start_scrapy()
 
     def start_scrapy(self):
         """
         Scrapping results from task
         """
-        self.args.pop("_state")
-        self.args.pop("chat_id")
-
-        return None
+        response = requests.post("http://scraper:8000", json=self.args)  # TODO переделать под переменную сервера или нет
+        data = response.json()
+        print(data)
+        return data
 
     def check_results(self) -> list[Offer]:
         """

@@ -24,7 +24,7 @@ class Room(models.Model):
 class Task(models.Model):
     chat_id = models.IntegerField()
     updated = models.BooleanField(default=False)
-    rooms = models.ManyToManyField(Room, through="tasks.models.Offer")
+    rooms = models.ManyToManyField(Room, through="Offer")
 
     query = models.CharField(max_length=100)  # city
     price_min = models.PositiveIntegerField()
@@ -52,30 +52,6 @@ class Task(models.Model):
 
     def __str__(self):
         return str(self.id)
-
-    # def scrapy_args(self):
-    #     main = (
-    #         f" -a query='{self.query}'"
-    #         f" -a price_min={self.price_min}"
-    #         f" -a price_max={self.price_max}"
-    #         f" -a room_types='{self.room_types}'"
-    #         f" -a min_bedrooms={self.min_bedrooms}"
-    #         f" -a min_beds={self.min_beds}"
-    #         f" -a date_picker_type={self.date_picker_type}"
-    #         )
-    #     if self.date_picker_type == "flexible_dates":
-    #         main += f" -a flexible_trip_lengths={self.flexible_trip_lengths}"
-    #         main += f" -a flexible_trip_dates='{self.flexible_trip_dates}'"
-    #
-    #     elif self.date_picker_type == "monthly_stay":
-    #         main += f" -a monthly_start_date={self.monthly_start_date}"
-    #         main += f" -a monthly_length={self.monthly_length}"
-    #
-    #     elif self.date_picker_type == "calendar":
-    #         main += f" -a checkin={self.checkin}"
-    #         main += f" -a checkout={self.checkout}"
-    #
-    #     return main
 
 
 class Offer(models.Model):
