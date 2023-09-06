@@ -17,4 +17,3 @@ class TaskAdmin(admin.ModelAdmin):
 admin.site.register(Task)
 admin.site.register(Room)
 admin.site.register(Offer)
-

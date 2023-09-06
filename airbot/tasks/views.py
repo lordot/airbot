@@ -1,3 +1,4 @@
+
 from django.http import HttpResponse
 
 from .models import Task
@@ -9,4 +10,3 @@ def index(request):
     scrp = Scrapper(task=task)
     results = scrp.check_results()
     return HttpResponse(results)
-
