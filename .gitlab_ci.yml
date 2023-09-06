@@ -1,0 +1,62 @@
+stages:
+  - test
+  - cleanup
+  - push
+  - deploy
+
+test:
+  stage: test
+  image:
+    name: docker/compose:1.26.2
+    entrypoint: [""]
+  script:
+    - docker-compose
+        -p "$CI_PROJECT_NAME"_"$CI_PIPELINE_ID"
+      up
+        --abort-on-container-exit
+        --exit-code-from app
+        --quiet-pull
+
+cleanup:
+  stage: cleanup
+  image:
+    name: docker/compose:1.23.2
+    entrypoint: [""]
+  script:
+    - docker-compose -p "$CI_PROJECT_NAME"_"$CI_PIPELINE_ID" down
+  when: always
+
+push:
+  stage: push
+  before_script:
+    - echo $CI_BUILD_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+  script:
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh root@"$PRODUCTION_SERVER_IP" "echo $CI_BUILD_TOKEN | docker login -u ${CI_REGISTRY_USER} --password-stdin ${CI_REGISTRY};
+      docker stop xpaste-app; docker rm xpaste-app;
+      docker run --name xpaste-app --network xpaste-net
+      -e DB_HOST=xpaste-postgres
+      -e DB_PORT=5432
+      -e DB_NAME=xpaste
+      -e DB_USER=postgres
+      -e DB_PASSWORD=postgres
+      -e RAILS_ENV=production
+      -e RAILS_LOG_TO_STDOUT=1
+      -e SECRET_KEY_BASE=xxxxxxxxxxxxxxxxxxxxxxxxx
+      -p 80:80
+      -d $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID"
+  only:
+    - master

@@ -1,5 +1,4 @@
 asgiref==3.7.2
-<<<<<<< HEAD
 attrs==23.1.0
 Automat==22.10.0
 certifi==2023.7.22
@@ -44,13 +43,3 @@ urllib3==2.0.4
 uvicorn==0.23.2
 w3lib==2.1.2
 zope.interface==6.0
-=======
-click==8.1.7
-colorama==0.4.6
-Django==4.2.4
-h11==0.14.0
-psycopg2==2.9.7
-sqlparse==0.4.4
-tzdata==2023.3
-uvicorn==0.23.2
->>>>>>> 3bec8d3025f44fe31df7c51d511cc2c2f2024e3b
