@@ -1,12 +1,14 @@
 import requests
 
+from django.conf import settings
+
 from tasks.models import Task, Room, Offer
 
 
 class Scrapper:
 
     def __init__(self, task: Task):
-        self.args = task.__dict__
+        self.args = task.__dict__.copy()
         self.args.pop("_state")
         self.task_id = self.args.pop("id")
         self.chat_id = self.args.pop("chat_id")
@@ -16,17 +18,18 @@ class Scrapper:
         """
         Scrapping results from task
         """
-        response = requests.post("http://scraper:8000", json=self.args)  # TODO переделать под переменную сервера или нет
-        data = response.json()
-        print(data)
+        response = requests.post("http://scraper:8000",
+                                 json=self.args)  # TODO переделать под переменную сервера или нет
+        data = response.json()  # TODO если больше 360 то рейсить ошибку и не сравнивать
         return data
 
-    def check_results(self) -> list[Offer]:
+    def check_results(self) -> tuple[list[Offer], dict]:
         """
         Compare results with database
         """
+        total = self.results.copy()
         new_offers = [item["id"] for item in self.results]
-        old_offers = Offer.objects.filter(task_id=self.task_id)  # TODO исправить
+        old_offers = Offer.objects.filter(task_id=self.task_id)
 
         del_offers = []
         for offer in old_offers:
@@ -41,7 +44,7 @@ class Scrapper:
         deleted = self.delete_offers(del_offers)
         news = self.create_offers(self.results)
 
-        return news
+        return news, total
 
     @staticmethod
     def create_rooms(results: list):
@@ -54,7 +57,7 @@ class Scrapper:
             if room["id"] not in exists:
                 new = Room(
                     id=room["id"],
-                    name=room["name"],
+                    name=room["name"].translate({ord(i): None for i in "'()._*~,>+#[]|!{}=-"}),
                     type=room["type"],
                     rate=room.get("rate", None),
                     reviews=room.get("reviews", None)
@@ -88,3 +91,28 @@ class Scrapper:
         queryset = Offer.objects.filter(id__in=ids)
         queryset._raw_delete(queryset.db)
         return offers
+
+
+class TelegramBot:
+    def __init__(self, task: Task, new_offers: list[Offer]):
+        self.task = task
+        self.new_offers = new_offers
+        self.api_url = f"https://api.telegram.org/bot{settings.BOT_TOKEN}/sendMessage"
+        self.offer_url = "https://ru.airbnb.com/rooms/"
+
+    def send_changes(self) -> dict:
+        response = requests.post(
+            url="https://api.telegram.org/bot{0}/sendMessage".format(settings.BOT_TOKEN),
+            data={"chat_id": self.task.chat_id, "parse_mode": "MarkdownV2", "text": self._message()}
+        ).json()
+        print(response)
+        return response
+
+    def _message(self) -> str:
+        message = f"*Query: {self.task.id}: {self.task.query} {self.task.price_min} - {self.task.price_max}:*\n\n"
+
+        for offer in self.new_offers:
+            message += f" - [{offer.room.name.capitalize()}]({self.offer_url + str(offer.room.id)}) {offer.checkin} - {offer.checkout} - *{offer.price}*\n"
+
+        message = message.replace("-", "\\-")
+        return message

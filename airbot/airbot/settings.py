@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -14,8 +14,10 @@ SECRET_KEY = os.getenv("SECRET", "secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", True)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django"]
-CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(" ")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "http://localhost").split(" ")
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Application definition
 
@@ -61,21 +63,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'airbot.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('ENGINE', 'django.db.backends.dummy'),
-        'NAME': os.getenv('DB_NAME', 'postgres'),
+        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
         'HOST': os.getenv('HOST', 'localhost'),
         'PORT': os.getenv('PORT', '5432')
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -95,7 +95,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -106,7 +105,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

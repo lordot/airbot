@@ -1,0 +1,38 @@
+stages:
+#  - test
+  - deploy
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_DEPTH: 1
+
+#docker_compose_build:
+#  stage: test
+#  image:
+#    name: docker:24.0.6
+#  services:
+#    - docker:24.0.6-dind
+#  before_script:
+#    - docker compose version
+#    - cd ./infra/
+#  script:
+#    - echo "$CI_PROJECT_NAME"_"$CI_PIPELINE_ID"
+#    - docker compose -p "$CI_PROJECT_NAME"_"$CI_PIPELINE_ID" -f docker-compose-ci.yaml up -d
+#  only:
+#    - main
+
+
+deploy:
+  stage: deploy
+  image: docker
+  variables:
+    DOCKER_HOST: tcp://$DEPLOY_SERVER
+  before_script:
+    - apk add openssh-client rsync
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan "$DEPLOY_SERVER" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  script:
+    - docker compose -f ./infra/docker-compose-ci.yaml up -d --build

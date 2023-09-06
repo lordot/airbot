@@ -20,6 +20,10 @@ class Room(models.Model):
     rate = models.FloatField(null=True, blank=True)
     reviews = models.IntegerField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        self.name = self.name.translate({ord(i): None for i in "'()._*~,>+#[]|!{}=-"})
+        super(Room, self).save(*args, **kwargs)
+
 
 class Task(models.Model):
     chat_id = models.IntegerField()
