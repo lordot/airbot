@@ -116,7 +116,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-<<<<<<< HEAD
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-=======
->>>>>>> 3bec8d3025f44fe31df7c51d511cc2c2f2024e3b
