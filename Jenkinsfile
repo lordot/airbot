@@ -45,10 +45,8 @@ pipeline {
         stage('commit version update') {
             steps {
                 withCredentials([gitUsernamePassword(credentialsId: 'lordot-github', gitToolName: 'Default')]) {
-                    sh 'git config --global user.email "jenkins@example.com"'
-                    sh 'git config --global user.name "jenkins"'
-
-//                     sh "git remote set-url origin https://${GIT_USER}:${GIT_PASS}@github.com/lordot/airbot.git"
+//                     sh 'git config --global user.email "jenkins@example.com"'
+//                     sh 'git config --global user.name "jenkins"'
                     sh 'git add .'
                     sh 'git commit -m "ci: version bump"'
                     sh "git push origin HEAD:${env.BRANCH_NAME}"
