@@ -11,16 +11,39 @@ pipeline {
     stages {
         stage('increment_version') {
             steps {
-                echo "jenkins-${JOB_NAME}-${BUILD_NUMBER}"
+                script {
+                    def currentVersion = sh(script: 'cat ./airbot/Dockerfile | grep "LABEL version" | cut -d "=" -f2', returnStdout: true).trim()
+                    echo "Old version from Dockerfile: ${currentVersion}"
+
+                    def changeType = 'patch'
+                    if (BRANCH_NAME == 'main') {
+                        changeType = 'minor'
+                    } else {
+                        changeType = 'patch'
+                    }
+
+                    if (changeType == 'minor') {
+                        def versionParts = currentVersion.tokenize('.')
+                        def newMinorVersion = versionParts[1].toInteger() + 1
+                        currentVersion = "${versionParts[0]}.${newMinorVersion}.${versionParts[2]}"
+                    } else if (changeType == 'patch') {
+                        def versionParts = currentVersion.tokenize('.')
+                        def newPatchVersion = versionParts[2].toInteger() + 1
+                        currentVersion = "${versionParts[0]}.${versionParts[1]}.${newPatchVersion}"
+                    }
+                    echo "New version: ${currentVersion}"
+                }
+            }
+        }
             }
         }
         stage('build_docker') {
             steps {
                 script {
-                    buildImage("${REPO}/airbot:1.0", './airbot')
+                    buildImage("${REPO}/airbot:${currentVersion}", './airbot')
                 }
                 script {
-                   buildImage("${REPO}/airnginx:1.0", './infra/nginx')
+                   buildImage("${REPO}/airnginx:${currentVersion}", './infra/nginx')
                 }
             }
         }
@@ -33,18 +56,18 @@ pipeline {
                     loginDocker REPO
                 }
                 script {
-                    pushImage("${REPO}/airbot:1.0")
+                    pushImage("${REPO}/airbot:${currentVersion}")
                 }
                 script {
-                    pushImage("${REPO}/airnginx:1.0")
+                    pushImage("${REPO}/airnginx:${currentVersion}")
                 }
             }
         }
     }
     post {
         success {
-            sh "docker rmi ${REPO}/airbot:1.0"
-            sh "docker rmi ${REPO}/airnginx:1.0"
+            sh "docker rmi ${REPO}/airbot:${currentVersion}"
+            sh "docker rmi ${REPO}/airnginx:${currentVersion}"
         }
     }
 }
