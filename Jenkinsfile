@@ -23,6 +23,7 @@ pipeline {
                 }
                 script {
                     buildImage("${REPO}/airnginx:${env.CURRENT_VERSION}", './infra/nginx')
+
                 }
             }
         }
