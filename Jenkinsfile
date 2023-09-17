@@ -12,10 +12,10 @@ pipeline {
         stage('build_docker') {
             steps {
                 script {
-                    buildImage('airbot:1.0', ${REPO}, './airbot')
+                    buildImage('airbot:1.0', $REPO, './airbot')
                 }
                 script {
-                   buildImage('airnginx:1.0', ${REPO}, './infra/nginx')
+                   buildImage('airnginx:1.0', $REPO, './infra/nginx')
                 }
             }
         }
@@ -25,18 +25,18 @@ pipeline {
             }
             steps {
                 script {
-                    pushImage(${REPO}, 'airbot:1.0')
+                    pushImage($REPO, 'airbot:1.0')
                 }
                 script {
-                    pushImage(${REPO}, 'airnginx:1.0')
+                    pushImage($REPO, 'airnginx:1.0')
                 }
             }
         }
     }
     post {
         always {
-            sh 'docker rmi $REPO/airbot:1.0'
-            sh 'docker rmi $REPO/air-nginx:1.0'
+            sh "docker rmi ${REPO}/airbot:1.0"
+            sh "docker rmi ${REPO}/air-nginx:1.0"
         }
     }
 }
