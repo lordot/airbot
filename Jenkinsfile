@@ -12,10 +12,10 @@ pipeline {
         stage('build_docker') {
             steps {
                 script {
-                    buildImage('airbot:1.0', '165.22.80.137:8083', './airbot')
+                    buildImage('airbot:1.0', REPO, './airbot')
                 }
                 script {
-                   buildImage('airnginx:1.0', '165.22.80.137:8083', './infra/nginx')
+                   buildImage('airnginx:1.0', REPO, './infra/nginx')
                 }
             }
         }
@@ -25,10 +25,10 @@ pipeline {
             }
             steps {
                 script {
-                    pushImage($REPO, 'airbot:1.0')
+                    pushImage(REPO, 'airbot:1.0')
                 }
                 script {
-                    pushImage($REPO, 'airnginx:1.0')
+                    pushImage(REPO, 'airnginx:1.0')
                 }
             }
         }
