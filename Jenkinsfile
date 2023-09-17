@@ -35,8 +35,6 @@ pipeline {
                 }
             }
         }
-            }
-        }
         stage('build_docker') {
             steps {
                 script {
