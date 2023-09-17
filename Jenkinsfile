@@ -9,6 +9,11 @@ pipeline {
         CREDS = credentials('nexus-user')
     }
     stages {
+        stage('increment_version') {
+            steps {
+                echo "jenkins-${JOB_NAME}-${BUILD_NUMBER}"
+            }
+        }
         stage('build_docker') {
             steps {
                 script {
