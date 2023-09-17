@@ -11,8 +11,12 @@ pipeline {
     stages {
         stage('build_docker') {
             steps {
-                buildImage 'airbot:1.0' $REPO './airbot'
-                buildImage 'airnginx:1.0' $REPO './infra/nginx'
+                script {
+                    buildImage 'airbot:1.0' $REPO './airbot'
+                }
+                script {
+                   buildImage 'airnginx:1.0' $REPO './infra/nginx'
+                }
             }
         }
         stage('push_to_repo') {
@@ -20,8 +24,12 @@ pipeline {
                 branch 'main'
             }
             steps {
-                pushImage $REPO 'airbot:1.0'
-                pushImage $REPO 'airnginx:1.0'
+                script {
+                    pushImage $REPO 'airbot:1.0'
+                }
+                script {
+                    pushImage $REPO 'airnginx:1.0'
+                }
             }
         }
     }
