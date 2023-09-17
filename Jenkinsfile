@@ -9,13 +9,21 @@ pipeline {
         CREDS = credentials('nexus-user')
     }
     stages {
+        stage('increment_version') {
+            steps {
+                script {
+                    incrementVersion "./airbot"
+                }
+            }
+        }
         stage('build_docker') {
             steps {
                 script {
-                    buildImage("${REPO}/airbot:1.0", './airbot')
+                    buildImage("${REPO}/airbot:${env.CURRENT_VERSION}", './airbot')
                 }
                 script {
-                   buildImage("${REPO}/airnginx:1.0", './infra/nginx')
+                    buildImage("${REPO}/airnginx:${env.CURRENT_VERSION}", './infra/nginx')
+
                 }
             }
         }
@@ -28,18 +36,29 @@ pipeline {
                     loginDocker REPO
                 }
                 script {
-                    pushImage("${REPO}/airbot:1.0")
+                    pushImage("${REPO}/airbot:${env.CURRENT_VERSION}")
                 }
                 script {
-                    pushImage("${REPO}/airnginx:1.0")
+                    pushImage("${REPO}/airnginx:${env.CURRENT_VERSION}")
+                }
+            }
+        }
+        stage('commit version update') {
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'lordot-github', gitToolName: 'Default')]) {
+//                     sh 'git config --global user.email "jenkins@example.com"'
+//                     sh 'git config --global user.name "jenkins"'
+                    sh 'git add .'
+                    sh 'git commit -m "ci: version bump"'
+                    sh "git push origin HEAD:${env.BRANCH_NAME}"
                 }
             }
         }
     }
     post {
         success {
-            sh "docker rmi ${REPO}/airbot:1.0"
-            sh "docker rmi ${REPO}/airnginx:1.0"
+            sh "docker rmi ${REPO}/airbot:${env.CURRENT_VERSION}"
+            sh "docker rmi ${REPO}/airnginx:${env.CURRENT_VERSION}"
         }
     }
 }

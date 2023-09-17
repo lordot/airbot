@@ -1,5 +1,7 @@
 FROM python:3.11-alpine
 
+LABEL version=1.0.4
+
 WORKDIR /app
 
 COPY requirements.txt .
