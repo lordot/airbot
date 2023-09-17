@@ -1,3 +1,7 @@
+#!/usr/bin/env groovy
+
+@Library('jenkins-shared-library')_
+
 pipeline {
     agent any
     environment {
@@ -7,15 +11,17 @@ pipeline {
     stages {
         stage('build_docker') {
             steps {
-                sh 'docker build ./airbot/ -t $REPO/airbot:1.0'
-                sh 'docker build ./infra/nginx/ -t $REPO/air-nginx:1.0'
+                buildImage 'airbot:1.0' $REPO './airbot'
+                buildImage 'airnginx:1.0' $REPO './infra/nginx'
             }
         }
         stage('push_to_repo') {
+            when {
+                branch 'main'
+            }
             steps {
-                sh 'echo $CREDS_PSW | docker login -u $CREDS_USR --password-stdin $REPO'
-                sh 'docker push $REPO/airbot:1.0'
-                sh 'docker push $REPO/air-nginx:1.0'
+                pushImage $REPO 'airbot:1.0'
+                pushImage $REPO 'airnginx:1.0'
             }
         }
     }
