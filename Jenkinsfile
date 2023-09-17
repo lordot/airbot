@@ -15,7 +15,7 @@ pipeline {
                     buildImage("${REPO}/airbot:1.0", './airbot')
                 }
                 script {
-                   buildImage("${REPO}/airbot:1.0", './infra/nginx')
+                   buildImage("${REPO}/airnginx:1.0", './infra/nginx')
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
                     pushImage("${REPO}/airbot:1.0")
                 }
                 script {
-                    pushImage("${REPO}/air-nginx:1.0")
+                    pushImage("${REPO}/airnginx:1.0")
                 }
             }
         }
@@ -39,7 +39,7 @@ pipeline {
     post {
         success {
             sh "docker rmi ${REPO}/airbot:1.0"
-            sh "docker rmi ${REPO}/air-nginx:1.0"
+            sh "docker rmi ${REPO}/airnginx:1.0"
         }
     }
 }
