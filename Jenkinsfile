@@ -18,11 +18,11 @@ pipeline {
                 sh 'docker push $REPO/air-nginx:1.0'
             }
         }
-        post {
-            always {
-                sh 'docker rmi $REPO/airbot:1.0'
-                sh 'docker rmi $REPO/air-nginx:1.0'
-            }
+    }
+    post {
+        always {
+            sh 'docker rmi $REPO/airbot:1.0'
+            sh 'docker rmi $REPO/air-nginx:1.0'
         }
     }
 }
