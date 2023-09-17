@@ -12,11 +12,11 @@ pipeline {
         stage('build_docker') {
             steps {
                 script {
-                    buildImage 'airbot:1.0' $REPO './airbot'
+                    buildImage '165.22.80.137:8083/airbot:1.0'
                 }
-                script {
-                   buildImage 'airnginx:1.0' $REPO './infra/nginx'
-                }
+//                 script {
+//                    buildImage 'airnginx:1.0' $REPO './infra/nginx'
+//                 }
             }
         }
         stage('push_to_repo') {
