@@ -11,13 +11,13 @@ services:
    test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
 
  scraper:
-  image: "165.22.80.137:8083/airscraper:1.0"
+  image: "${REPO}/airscraper:1.0"
   restart: always
   ports:
    - "8000:8000"
 
  django:
-  image: "165.22.80.137:8083/airbot:1.1.0"
+  image: "${REPO}/airbot:${TAG}"
   restart: always
   env_file:
    - .env
@@ -28,7 +28,7 @@ services:
     condition: service_healthy
 
  nginx:
-  image: "165.22.80.137:8083/airnginx:1.1.0"
+  image: "{REPO}/airnginx:${TAG}"
   ports:
    - "80:80"
   volumes:
