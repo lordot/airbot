@@ -46,7 +46,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    def dockerCMD = 'docker-compose -d up'
+                    def dockerCMD = 'docker compose -d up'
                     sshagent(['docker-node-01']) {
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@16.171.114.225 ${dockerCMD}"
                     }
