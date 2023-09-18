@@ -1,6 +1,6 @@
 FROM python:3.11-alpine
 
-LABEL version=1.1.0
+LABEL version=1.1.1
 
 WORKDIR /app
 
