@@ -28,9 +28,9 @@ pipeline {
             }
         }
         stage('push_to_repo') {
-            when {
-                branch 'main'
-            }
+//             when {
+//                 branch 'main'
+//             }
             steps {
                 script {
                     loginDocker REPO
@@ -51,6 +51,16 @@ pipeline {
                     sh 'git add .'
                     sh 'git commit -m "ci: version bump"'
                     sh "git push origin HEAD:${env.BRANCH_NAME}"
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                script {
+                    def dockerCMD = 'docker-compose -d up'
+                    sshagent(['docker-node-01']) {
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@16.171.114.225 ${dockerCMD}"
+                    }
                 }
             }
         }
