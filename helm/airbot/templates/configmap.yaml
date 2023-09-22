@@ -1,0 +1,14 @@
+{{- if .Values.envVars}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "airbot.fullname" . -}}-configmap
+data:
+  {{- range .Values.envVars}}
+  {{ .key }}: {{ .value }}
+  {{- end}}
+  csrf-origins: "{{ include "airbot.fullname" . }}-service"
+  allowed-hosts: "localhost 127.0.0.1 django"
+  postgres-host: "{{ include "airbot.fullname" . -}}-postgres"
+  airscraper-host: "airscraper-service"
+{{- end}}
