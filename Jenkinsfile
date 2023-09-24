@@ -49,7 +49,7 @@ pipeline {
                     echo 'deploying kubernetes pods...'
                     withKubeConfig([credentialsId: 'lke-configfile', serverUrl: 'https://06689cbd-962c-42c5-bb54-8bef03b752ae.eu-central-1.linodelke.net']) {
                         sh 'kubectl get nodes'
-                        sh 'helmfile template -f ./helm/helmfile.yaml'
+                        sh 'helmfile sync -f ./helm/helmfile.yaml'
                     }
                 }
             }
@@ -61,7 +61,7 @@ pipeline {
 //                     sh 'git config --global user.name "jenkins"'
                     sh 'git add .'
                     sh 'git commit -m "ci: version bump"'
-                    sh "git push origin HEAD:${env.BRANCH_NAME}"
+                    sh 'git push'
                 }
             }
         }
