@@ -12,7 +12,7 @@ pipeline {
         stage('increment_version') {
             steps {
                 script {
-                    incrementVersion "./airbot"
+                    incrementPatchVersion "./airbot"
                 }
             }
         }
@@ -46,11 +46,10 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    def shellCMD = "bash ./docker-execution.sh ${env.CURRENT_VERSION} ${REPO}"
-                    sshagent(['docker-node-01']) {
-                        sh "scp ./infra/docker-execution.sh ec2-user@16.171.114.225:/home/ec2-user/"
-                        sh "scp ./infra/docker-compose.yaml ec2-user@16.171.114.225:/home/ec2-user/"
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@16.171.114.225 ${shellCMD}"
+                    echo 'deploying kubernetes pods...'
+                    withKubeConfig([credentialsId: 'lke-configfile', serverUrl: 'https://06689cbd-962c-42c5-bb54-8bef03b752ae.eu-central-1.linodelke.net']) {
+                        sh 'kubectl get nodes'
+                        sh 'helmfile apply'
                     }
                 }
             }
