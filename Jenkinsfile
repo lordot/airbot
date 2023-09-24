@@ -7,6 +7,7 @@ pipeline {
     environment {
         REPO = '165.22.80.137:8083'
         CREDS = credentials('nexus-user')
+        BRANCH = "k8s"
     }
     stages {
         stage('increment_version') {
@@ -61,7 +62,7 @@ pipeline {
 //                     sh 'git config --global user.name "jenkins"'
                     sh 'git add .'
                     sh 'git commit -m "ci: version bump"'
-                    sh "git push origin HEAD:${env.GIT_BRANCH}"
+                    sh "git push origin HEAD:${BRANCH}"
                 }
             }
         }
