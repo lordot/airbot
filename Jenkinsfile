@@ -30,7 +30,7 @@ pipeline {
 //             }
             steps {
                 script {
-                    loginDocker
+                    sh "echo $CREDS_PSW | docker login -u $CREDS_USR --password-stdin"
                 }
                 script {
                     pushImage("${REPO}/airbot:${env.CURRENT_VERSION}")
