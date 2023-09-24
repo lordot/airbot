@@ -5,10 +5,10 @@ metadata:
   name: {{ include "airbot.fullname" . -}}-configmap
 data:
   {{- range .Values.envVars}}
-  {{ .key }}: {{ .value }}
+  {{ .key }}: {{ .value | quote }}
   {{- end}}
-  csrf-origins: "{{ include "airbot.fullname" . }}-service"
-  allowed-hosts: "localhost 127.0.0.1 django"
-  postgres-host: "{{ include "airbot.fullname" . -}}-postgres"
+  csrf-origins: "http://{{ include "airbot.fullname" . }}-service"
+  allowed-hosts: "*"
+  postgres-host: "postgres-postgresql"
   airscraper-host: "airscraper-service"
 {{- end}}
