@@ -1,0 +1,8 @@
+repositories:
+ - name: bitnami
+   url: https://github.com/bitnami/charts/tree/main/bitnami
+
+releases:
+- name: postgres
+  namespace: airbot
+  chart: bitnami/postgresql
