@@ -19,6 +19,11 @@ releases:
   chart: ./airbot
   values:
     - ./values/airbot.yaml
+    - image:
+        repository: {{ requiredEnv "REPO" }}/airbot
+        pullPolicy: Always
+        # Overrides the image tag whose default is the chart appVersion.
+        tag: {{ requiredEnv "CURRENT_VERSION" }}
     - secretVars:
         - name: BOT_TOKEN
           key: bottoken

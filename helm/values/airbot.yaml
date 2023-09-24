@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: lordot/airbot
+#  repository: lordot/airbot
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0"
+#  # Overrides the image tag whose default is the chart appVersion.
+#  tag: "1.0"
 
 imagePullSecrets: []
 nameOverride: ""
