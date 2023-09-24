@@ -5,8 +5,8 @@
 pipeline {
     agent any
     environment {
-        REPO = 'lordot'
-        CREDS = credentials('nexus-user')
+        REPO = 'docker.io/lordot'
+        CREDS = credentials('docker-hub')
         BRANCH = "k8s"
     }
     stages {
@@ -30,7 +30,7 @@ pipeline {
 //             }
             steps {
                 script {
-                    loginDocker
+                    loginDocker REPO
                 }
                 script {
                     pushImage("${REPO}/airbot:${env.CURRENT_VERSION}")
