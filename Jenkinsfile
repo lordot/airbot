@@ -30,7 +30,7 @@ pipeline {
 //             }
             steps {
                 script {
-                    loginDocker REPO
+                    loginDocker
                 }
                 script {
                     pushImage("${REPO}/airbot:${env.CURRENT_VERSION}")
