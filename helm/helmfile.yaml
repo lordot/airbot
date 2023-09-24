@@ -1,0 +1,83 @@
+repositories:
+ - name: bitnami
+   url: https://charts.bitnami.com/bitnami
+#
+releases:
+- name: postgres
+  namespace: airbot
+  chart: bitnami/postgresql
+  values:
+    - ./values/postgres.yaml
+    - auth:
+          postgresPassword: {{ requiredEnv "POSTGRES_PASSWORD" }}
+          database: {{ requiredEnv "POSTGRES_DB" }}
+
+- name: airbot
+  needs:
+    - airbot/postgres
+  namespace: airbot
+  chart: ./airbot
+  values:
+    - ./values/airbot.yaml
+    - image:
+        repository: {{ requiredEnv "REPO" }}/airbot
+        pullPolicy: Always
+        tag: {{ requiredEnv "CURRENT_VERSION" }}
+    - secretVars:
+        - name: BOT_TOKEN
+          key: bottoken
+          value: {{ requiredEnv "BOT_TOKEN" }}
+        - name: SECRET
+          key: secret
+          value: {{ requiredEnv "SECRET" }}
+    - envVars:
+        - name: POSTGRES_DB
+          key: postgresdb
+          value: {{ requiredEnv "POSTGRES_DB" }}
+        - name: POSTGRES_PASSWORD
+          key: postgrespassword
+          value: {{ requiredEnv "POSTGRES_PASSWORD" }}
+        - name: POSTGRES_USER
+          key: postgresuser
+          value: {{ requiredEnv "POSTGRES_USER" }}
+        - name: DEBUG
+          key: debug
+          value: {{ requiredEnv "DEBUG" }}
+        - name: DJANGO_SUPERUSER_PASSWORD
+          key: superuserpassword
+          value: {{ requiredEnv "DJANGO_SUPERUSER_PASSWORD" }}
+        - name: DJANGO_SUPERUSER_USERNAME
+          key: superusername
+          value: {{ requiredEnv "DJANGO_SUPERUSER_USERNAME" }}
+        - name: DJANGO_SUPERUSER_EMAIL
+          key: superuseremail
+          value: {{ requiredEnv "DJANGO_SUPERUSER_EMAIL" }}
+        - name: ENGINE
+          key: engine
+          value: {{ requiredEnv "ENGINE" }}
+
+- name: airscraper
+  namespace: airbot
+  chart: ./airbot
+  values:
+    - ./values/airscraper.yaml
+
+- name: nginx-static
+  needs:
+    - airbot/airbot
+  namespace: airbot
+  chart: bitnami/nginx
+  values:
+    - ./values/static-nginx.yaml
+
+- name: ingress-controller
+  needs:
+    - airbot/nginx-static
+  namespace: ingress
+  chart: bitnami/nginx-ingress-controller
+
+- name: ingress-rule
+  namespace: airbot
+  chart: ./ingress-rule
+  values:
+    - ./values/ingress.yaml

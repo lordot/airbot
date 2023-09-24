@@ -1,0 +1,11 @@
+auth:
+  postgresPassword: postgres
+  database: airbot
+primary:
+  persistence:
+    enabled: true
+    mountPath: "/data"
+    storageClass: "linode-block-storage"
+
+
+

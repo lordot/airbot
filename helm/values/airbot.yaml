@@ -1,0 +1,27 @@
+replicaCount: 1
+
+image:
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: "airbot"
+containerPort: 8000
+probePath: "/admin"
+
+podLabels: {app: airbot}
+
+persistent:
+  name: static-pvc
+  storage: 1Gi
+
+service:
+  port: 80
+
+volumes:
+  - name: static
+    persistentVolumeClaim:
+      claimName: static-pvc
+
+volumeMounts:
+  - mountPath: "/app/static/"
+    name: static

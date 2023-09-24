@@ -5,14 +5,15 @@
 pipeline {
     agent any
     environment {
-        REPO = '165.22.80.137:8083'
-        CREDS = credentials('nexus-user')
+        REPO = 'lordot'
+        CREDS = credentials('docker-hub')
+        BRANCH = "k8s"
     }
     stages {
         stage('increment_version') {
             steps {
                 script {
-                    incrementVersion "./airbot"
+                    incrementPatchVersion "./airbot"
                 }
             }
         }
@@ -21,25 +22,29 @@ pipeline {
                 script {
                     buildImage("${REPO}/airbot:${env.CURRENT_VERSION}", './airbot')
                 }
-                script {
-                    buildImage("${REPO}/airnginx:${env.CURRENT_VERSION}", './infra/nginx')
-
-                }
             }
         }
         stage('push_to_repo') {
-            when {
-                branch 'main'
-            }
+//             when {
+//                 branch 'main'
+//             }
             steps {
                 script {
-                    loginDocker REPO
+                    sh "echo $CREDS_PSW | docker login -u $CREDS_USR --password-stdin"
                 }
                 script {
                     pushImage("${REPO}/airbot:${env.CURRENT_VERSION}")
                 }
+            }
+        }
+        stage('deploy') {
+            steps {
                 script {
-                    pushImage("${REPO}/airnginx:${env.CURRENT_VERSION}")
+                    echo 'deploying kubernetes pods...'
+                    withKubeConfig([credentialsId: 'lke-configfile', restrictKubeConfigAccess: 'true', serverUrl: 'https://06689cbd-962c-42c5-bb54-8bef03b752ae.eu-central-1.linodelke.net']) {
+                        sh 'kubectl get nodes'
+                        sh 'helmfile apply -f ./helm/helmfile.yaml'
+                    }
                 }
             }
         }
@@ -50,7 +55,7 @@ pipeline {
 //                     sh 'git config --global user.name "jenkins"'
                     sh 'git add .'
                     sh 'git commit -m "ci: version bump"'
-                    sh "git push origin HEAD:${env.BRANCH_NAME}"
+                    sh "git push origin HEAD:${BRANCH}"
                 }
             }
         }
@@ -58,7 +63,6 @@ pipeline {
     post {
         success {
             sh "docker rmi ${REPO}/airbot:${env.CURRENT_VERSION}"
-            sh "docker rmi ${REPO}/airnginx:${env.CURRENT_VERSION}"
         }
     }
 }

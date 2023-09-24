@@ -18,7 +18,7 @@ class Scrapper:
         """
         Scrapping results from task
         """
-        response = requests.post("http://scraper:8000",
+        response = requests.post(f"http://{settings.AIRSCRAPER_HOST}:8000",
                                  json=self.args)  # TODO переделать под переменную сервера или нет
         data = response.json()  # TODO если больше 360 то рейсить ошибку и не сравнивать
         return data

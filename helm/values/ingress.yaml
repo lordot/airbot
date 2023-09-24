@@ -1,0 +1,15 @@
+paths:
+  - path: /static
+    pathType: Prefix
+    backend:
+      service:
+        name: nginx-static
+        port:
+          name: http
+  - path: /
+    pathType: Prefix
+    backend:
+      service:
+        name: airbot-service
+        port:
+          name: http

@@ -1,0 +1,17 @@
+replicaCount: 2
+
+image:
+  repository: lordot/airscraper
+  pullPolicy: Always
+  tag: "1.0"
+
+fullnameOverride: "airscraper"
+probePath: "/healthz"
+
+podLabels: {app: airscraper}
+
+service:
+  type: ClusterIP
+  port: 8000
+
+containerPort: 8000

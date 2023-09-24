@@ -1,0 +1,9 @@
+service:
+  type: ClusterIP
+extraVolumes:
+  - name: static
+    persistentVolumeClaim:
+      claimName: static-pvc
+extraVolumeMounts:
+  - mountPath: "/opt/bitnami/nginx/html/static/"
+    name: static
