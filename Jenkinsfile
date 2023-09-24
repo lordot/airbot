@@ -49,7 +49,7 @@ pipeline {
                     echo 'deploying kubernetes pods...'
                     withKubeConfig([credentialsId: 'lke-configfile', serverUrl: 'https://06689cbd-962c-42c5-bb54-8bef03b752ae.eu-central-1.linodelke.net']) {
                         sh 'kubectl get nodes'
-                        sh 'helmfile apply'
+                        sh 'helmfile template -f ./helm/helmfile.yaml'
                     }
                 }
             }
