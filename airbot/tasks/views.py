@@ -8,7 +8,7 @@ from .services import Scrapper, TelegramBot
 def index(request):
     task = Task.objects.first()
     if task is None:
-        return HttpResponse("No tasks for parse:(")
+        return HttpResponse("No tasks for parse:)")
 
     scrp = Scrapper(task=task)
     results, total = scrp.check_results()
