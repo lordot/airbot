@@ -51,7 +51,7 @@ pipeline {
                     echo 'deploying kubernetes pods...'
                     withKubeConfig([credentialsId: 'lke-configfile', serverUrl: 'https://06689cbd-962c-42c5-bb54-8bef03b752ae.eu-central-1.linodelke.net']) {
                         sh 'kubectl get nodes'
-                        sh "kubectl -n ${NAMESPACE} create secret docker-registry repo-secret   --docker-server=${REPO}   --docker-username=${CREDS_USR}  --docker-password=${CREDS_PSW} --save-config | kubectl apply -f -"
+                        sh "kubectl -n ${NAMESPACE} create secret docker-registry repo-secret   --docker-server=${REPO}   --docker-username=${CREDS_USR}  --docker-password=${CREDS_PSW} --validate=false --save-config | kubectl apply -f -"
                         sh 'helmfile sync -f ./helm/helmfile.yaml'
                     }
                 }
