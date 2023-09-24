@@ -3,8 +3,6 @@ replicaCount: 1
 image:
   pullPolicy: Always
 
-
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: "airbot"
 containerPort: 8000
