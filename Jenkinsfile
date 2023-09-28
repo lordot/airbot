@@ -56,17 +56,17 @@ pipeline {
                 }
             }
         }
-//         stage('deploy') {
-//             steps {
-//                 script {
-//                     echo 'deploying kubernetes pods...'
-//
-//                     sh "aws eks --region ${REGION} update-kubeconfig --name ${CLUSTER_NAME}"
-//                     sh 'kubectl get nodes'
-//                     sh 'helmfile apply -f ./helm/helmfile.yaml'
-//                 }
-//             }
-//         }
+        stage('deploy') {
+            steps {
+                script {
+                    echo 'deploying kubernetes pods...'
+
+                    sh "aws eks --region ${REGION} update-kubeconfig --name ${CLUSTER_NAME}"
+                    sh 'kubectl get nodes'
+                    sh 'helmfile apply -f ./helm/helmfile.yaml'
+                }
+            }
+        }
 //         stage('commit version update') {
 //             steps {
 //                 withCredentials([gitUsernamePassword(credentialsId: 'lordot-github', gitToolName: 'Default')]) {
