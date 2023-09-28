@@ -7,7 +7,9 @@ pipeline {
     environment {
         REPO = 'lordot'
         CREDS = credentials('docker-hub')
-        BRANCH = "k8s"
+        BRANCH = 'k8s'
+        REGION = 'eu-north-1'
+        CLUSTER_NAME = 'dev-cluster'
     }
     stages {
         stage('increment_version') {
@@ -37,28 +39,43 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('provision') {
+            environment {
+                AWS_ACCESS_KEY_ID=credentials('aws_access_key_id')
+                AWS_SECRET_ACCESS_KEY=credentials('aws_secret_key')
+                AWS_DEFAULT_REGION=$REGION
+                TF_VAR_region=$REGION
+                TF_VAR_cluster_name=$CLUSTER_NAME
+            }
             steps {
                 script {
-                    echo 'deploying kubernetes pods...'
-                    withKubeConfig([credentialsId: 'lke-configfile', restrictKubeConfigAccess: 'true', serverUrl: 'https://06689cbd-962c-42c5-bb54-8bef03b752ae.eu-central-1.linodelke.net']) {
-                        sh 'kubectl get nodes'
-                        sh 'helmfile apply -f ./helm/helmfile.yaml'
+                    dir('terraform') {
+                        sh 'terraform init'
+                        sh 'terraform apply --auto-approve' // TODO add to wait until all up
                     }
                 }
             }
         }
-        stage('commit version update') {
-            steps {
-                withCredentials([gitUsernamePassword(credentialsId: 'lordot-github', gitToolName: 'Default')]) {
-//                     sh 'git config --global user.email "jenkins@example.com"'
-//                     sh 'git config --global user.name "jenkins"'
-                    sh 'git add .'
-                    sh 'git commit -m "ci: version bump"'
-                    sh "git push origin HEAD:${BRANCH}"
-                }
-            }
-        }
+//         stage('deploy') {
+//             steps {
+//                 script {
+//                     echo 'deploying kubernetes pods...'
+//
+//                     sh "aws eks --region ${REGION} update-kubeconfig --name ${CLUSTER_NAME}"
+//                     sh 'kubectl get nodes'
+//                     sh 'helmfile apply -f ./helm/helmfile.yaml'
+//                 }
+//             }
+//         }
+//         stage('commit version update') {
+//             steps {
+//                 withCredentials([gitUsernamePassword(credentialsId: 'lordot-github', gitToolName: 'Default')]) {
+//                     sh 'git add .'
+//                     sh 'git commit -m "ci: version bump"'
+//                     sh "git push origin HEAD:${BRANCH}"
+//                 }
+//             }
+//         }
     }
     post {
         success {
