@@ -23,14 +23,14 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-    blue = {
-      min_size = 1
-      max_size = 2
-      desired_size = 1
-
-      instance_types = ["t3.small"]
-      capacity_type  = "SPOT"
-    }
+#    blue = {
+#      min_size = 1
+#      max_size = 2
+#      desired_size = 1
+#
+#      instance_types = ["t3.small"]
+#      capacity_type  = "SPOT"
+#    }
     green = {
       min_size = 1
       max_size = 2
