@@ -43,9 +43,9 @@ pipeline {
             environment {
                 AWS_ACCESS_KEY_ID=credentials('aws_access_key_id')
                 AWS_SECRET_ACCESS_KEY=credentials('aws_secret_key')
-                AWS_DEFAULT_REGION=$REGION
-                TF_VAR_region=$REGION
-                TF_VAR_cluster_name=$CLUSTER_NAME
+                AWS_DEFAULT_REGION="$REGION"
+                TF_VAR_region="$REGION"
+                TF_VAR_cluster_name="$CLUSTER_NAME"
             }
             steps {
                 script {
